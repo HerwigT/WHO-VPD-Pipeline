@@ -1,0 +1,59 @@
+services:
+  kestra:
+    image: kestra/kestra:latest
+    user: root
+    command: server standalone
+    ports:
+      - "8080:8080"
+    environment:
+      KESTRA_CONFIGURATION: |
+        kestra:
+          variables:
+            env-vars-prefix: "KESTRA_"
+          tutorial-flows:
+            enabled: false
+          queue:
+            type: postgres
+          repository:
+            type: postgres
+          storage:
+            type: local
+            local:
+              base-path: "/app/storage"
+        datasources:
+          postgres:
+            url: jdbc:postgresql://postgres:5432/kestra
+            driverClassName: org.postgresql.Driver
+            username: kestra
+            password: kestra_password
+        micronaut:
+          io:
+            watch:
+              enabled: true
+              paths:
+                - /flows
+      GOOGLE_APPLICATION_CREDENTIALS: /app/credentials.json
+      KESTRA_BUCKET_NAME: ${BUCKET_NAME}
+    volumes:
+      - kestra_storage:/app/storage
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/kestra-wd:/tmp/kestra-wd
+      # Mount your GCP Service Account Key for authentication
+      - ./credentials.json:/app/credentials.json:ro
+      - ./kestra/flows:/flows
+      - ./scripts:/app/scripts:ro
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: kestra
+      POSTGRES_USER: kestra
+      POSTGRES_PASSWORD: kestra_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  kestra_storage:
+  postgres_data:

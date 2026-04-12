@@ -1,0 +1,21 @@
+id: data-ingestion
+namespace: who
+
+variables:
+  indicators: ["WHS3_41", "WHS3_49", "WHS3_43", "WHS3_46", "WHS4_100", "WHS4_544"]
+
+tasks:
+  - id: iterate_indicators
+    type: io.kestra.plugin.core.flow.ForEach
+    values: "{{ vars.indicators }}"
+    concurrencyLimit: 1
+    tasks:
+      - id: run_ingest_script
+        type: io.kestra.plugin.scripts.python.Commands
+        taskRunner:
+          type: io.kestra.plugin.core.runner.Process
+        beforeCommands:
+          - pip install requests pandas pyarrow google-cloud-storage
+        commands:
+          - python3 /app/scripts/ingest_who_to_bronze.py "{{ taskrun.value }}" "{{ envs.bucket_name}}"
+  

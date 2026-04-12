@@ -1,7 +1,72 @@
 # WHO-VPD-Pipeline
-An ETL pipeline for the WHO GHO OData API. Automates extraction of fragmented disease incidence and vaccination records (DTP/Polio 1, 3, 4).
+An ETL pipeline for the WHO GHO OData API. Automates extraction of fragmented disease incidence and vaccination records (DTP/Polio 3).
 
+# Setup
+- Install gcloud cli
+- run ```bash gcloud auth application-default login```
 
+🛠️ Infrastructure Setup
+This project uses Terraform to manage Google Cloud Platform (GCP) resources and follows the Medallion Architecture (Bronze GCS bucket, Silver/Gold BigQuery datasets).
+
+1. Prerequisites
+
+Ensure you have the following tools installed:
+- Google Cloud SDK (gcloud CLI)
+- Terraform (v1.0+)
+
+2. Google Cloud Initialization
+
+- Create a Project: Log into the GCP Console and create a new project. Note your Project ID.
+- Enable Billing: Ensure billing is attached to the project (required for BigQuery and Dataproc APIs).
+- Authenticate CLI:
+```bash
+gcloud auth login
+gcloud auth application-default login
+```
+
+3. Provision Infrastructure (Terraform)
+
+Navigate to the terraform/ directory and execute the following:
+
+```bash
+# Initialize Terraform and download Google providers
+terraform init
+
+# Review the execution plan
+terraform plan -var="project_id=YOUR_PROJECT_ID"
+
+# Deploy the infrastructure
+terraform apply -var="project_id=YOUR_PROJECT_ID"
+```
+4. Service Account & Security
+
+After the infrastructure is provisioned, you must generate a key for the Service Account so the Python/Spark scripts can interact with GCP:
+
+Generate JSON Key:
+
+```bash
+gcloud iam service-accounts keys create credentials.json \
+    --iam-account=who-pipeline-service-account@YOUR_PROJECT_ID.iam.gserviceaccount.com
+```
+
+5. Verified Resources
+
+Once complete, the following resources will be active:
+
+- GCS Bucket: who_bronze_lake_<project_id> (Raw Data Lake)
+- BigQuery Dataset: who_silver (Cleaned Tables)
+- BigQuery Dataset: who_gold (Reporting Tables)
+- Service Account: who-pipeline-service-account with Storage and BigQuery Admin roles.
+
+# Ingest Data
+
+- run:
+```bash
+export BUCKET_NAME=YOUR_BUCKET_NAME
+docker-compose up -d
+```
+- Open Kestra on localhost:8080
+- Run flow data-ingestion
 
 # 🛡️ Data Ethics & Compliance
 ## Sensitive Data & Privacy
