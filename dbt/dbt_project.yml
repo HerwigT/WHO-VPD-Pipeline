@@ -1,0 +1,29 @@
+name: 'who_vpd_pipeline'
+version: '1.0.0'
+config-version: 2
+
+profile: 'who_vpd'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+on-run-start:
+  - "{{ create_external_table(env_var('GCP_PROJECT_ID'), 'who_bronze', 'who_data_raw') }}"
+
+models:
+  who_vpd_pipeline:
+    staging:
+      +materialized: view
+      +dataset: who_silver
+    marts:
+      +materialized: table
+      +dataset: who_gold

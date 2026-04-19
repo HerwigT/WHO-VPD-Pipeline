@@ -1,0 +1,6 @@
+# dbt specific ignores
+target/
+dbt_packages/
+dbt_modules/
+logs/
+

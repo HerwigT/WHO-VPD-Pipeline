@@ -1,0 +1,7 @@
+indicator_code,indicator_name,category
+WHS3_41,Diphteria,Disease
+WHS3_43,Pertussis,Disease
+WHS3_46,Tetanus,Disease
+WHS3_49,Polio,Disease
+WHS4_100,DPT3 Vaccination,Vaccine
+WHS4_544,POLIO3 Vaccination,Vaccine

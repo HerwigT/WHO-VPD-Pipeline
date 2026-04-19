@@ -52,12 +52,19 @@ resource "google_project_iam_member" "sa_roles" {
   member   = "serviceAccount:${google_service_account.pipeline_sa.email}"
 }
 
-# 1. Bronze Layer (Data Lake - GCS)
+# 1. Bronze Layer (Data Lake - GCS & External Tables)
 resource "google_storage_bucket" "bronze_lake" {
   name          = "who_bronze_lake_${var.project_id}"
   location      = var.region
   force_destroy = true
   depends_on	= [google_project_service.enabled_apis]
+}
+
+resource "google_bigquery_dataset" "bronze_dataset" {
+  dataset_id = "who_bronze"
+  project    = var.project_id
+  location   = var.region
+  depends_on = [google_project_service.enabled_apis]
 }
 
 # 2. Silver Layer (Warehouse - BigQuery Dataset)

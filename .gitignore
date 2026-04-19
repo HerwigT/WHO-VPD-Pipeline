@@ -3,3 +3,4 @@ credentials.json
 *.tfstate*
 .terraform
 *.terraform*
+.DS_Store

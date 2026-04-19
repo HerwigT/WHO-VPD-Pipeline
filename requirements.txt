@@ -1,0 +1,8 @@
+streamlit
+plotly
+streamlit-plotly-events
+google-cloud-bigquery
+requests
+pandas
+python-dotenv
+dbt-bigquery

@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: bronze_who
+    database: "{{ env_var('GCP_PROJECT_ID') }}"
+    schema: who_bronze
+    tables:
+      - name: who_data_raw
+        description: "Raw WHO data from GCS"

@@ -20,6 +20,9 @@ services:
             type: local
             local:
               base-path: "/app/storage"
+          local-files:
+            allowed-paths:
+              - /dbt
         datasources:
           postgres:
             url: jdbc:postgresql://postgres:5432/kestra
@@ -33,7 +36,10 @@ services:
               paths:
                 - /flows
       GOOGLE_APPLICATION_CREDENTIALS: /app/credentials.json
+      KESTRA_GCP_PROJECT_ID: ${GCP_PROJECT_ID}
+      KESTRA_GCP_REGION: ${GCP_REGION}
       KESTRA_BUCKET_NAME: ${BUCKET_NAME}
+      KESTRA_HOST_PROJECT_PATH: ${PWD}
     volumes:
       - kestra_storage:/app/storage
       - /var/run/docker.sock:/var/run/docker.sock
@@ -42,6 +48,7 @@ services:
       - ./credentials.json:/app/credentials.json:ro
       - ./kestra/flows:/flows
       - ./scripts:/app/scripts:ro
+      - ./dbt:/app/dbt
     depends_on:
       - postgres
 
