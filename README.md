@@ -1,6 +1,8 @@
 # WHO-VPD-Pipeline
 An ETL pipeline for the WHO GHO OData API. Automates extraction of fragmented disease incidence and vaccination records (DTP/Polio 3).
 
+Note: The "3" stands for 3rd dose received -> full immunization
+
 ## Problem Description
 
 **Global health surveillance data is fragmented and difficult to access.** The World Health Organization (WHO) collects vast amounts of epidemiological and immunization data through its Global Health Observatory (GHO), but this data is scattered across multiple APIs and formats, making it challenging for researchers, health officials, and analysts to:
@@ -148,7 +150,7 @@ make transform
 make view
 ```
 
-# 🛡️ Data Ethics & Compliance
+# Data Ethics & Compliance
 ## Sensitive Data & Privacy
 
 This project adheres to high standards of data privacy and ethical engineering practices:
